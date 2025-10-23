@@ -1,0 +1,5 @@
+{
+  "command.giverebuild.info.start": "[PeaceGiver] Start config reload and peace chunks rebuild...",
+  "command.giverebuild.info.complete": "[PeaceGiver] Complete!",
+  "command.giverebuild.info.error": "[PeaceGiver] Error occurs when reloading config, pls check your log!"
+}
