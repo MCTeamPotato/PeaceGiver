@@ -15,8 +15,9 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -59,14 +60,15 @@ public final class PeaceGiver {
         rebuildForServer(event.getServer());
     }
 
-    private void enemySpawn(MobSpawnEvent.@NotNull FinalizeSpawn event) {
-        if (event.isSpawnCancelled()) return;
-        if (!(event.getEntity() instanceof Enemy)) return;
+    @SuppressWarnings("PatternVariableCanBeUsed")
+    private void enemySpawn(LivingSpawnEvent.@NotNull CheckSpawn event) {
+        if (event.getResult().equals(Event.Result.DENY)) return;
+        if (!(event.getEntity() instanceof Enemy) || !(event.getLevel() instanceof ServerLevel)) return;
 
-        ServerLevel level = event.getLevel().getLevel();
+        ServerLevel level = (ServerLevel)event.getLevel();
         long chunk = ChunkPos.asLong(SectionPos.blockToSectionCoord(event.getX()), SectionPos.blockToSectionCoord(event.getZ()));
         if (PeaceChunks.get(level).viewChunk(level, chunk).isEmpty()) return;
-        event.setSpawnCancelled(true);
+        event.setResult(Event.Result.DENY);
         if (GiverConfig.DEBUG) LOGGER.info("[PeaceGiver] Prevent enemy {} spawning as the chunk [{}, {}] is in peace", event.getEntity(), ChunkPos.getX(chunk), ChunkPos.getZ(chunk));
     }
 
@@ -74,13 +76,13 @@ public final class PeaceGiver {
         event.getDispatcher().register(Commands.literal("giverebuild").requires(source -> source.hasPermission(2)).executes(context -> {
             CommandSourceStack source = context.getSource();
 
-            source.sendSuccess(() -> Component.translatable("command.giverebuild.info.start"), true);
+            source.sendFailure(Component.translatable("command.giverebuild.info.start"));
 
             try {
                 GiverConfig.loadConfig();
                 GiverConfig.init();
                 rebuildForServer(source.getServer());
-                source.sendSuccess(() -> Component.translatable("command.giverebuild.info.complete"), true);
+                source.sendSuccess(Component.translatable("command.giverebuild.info.complete"), true);
                 return Command.SINGLE_SUCCESS;
             } catch (Exception e) {
                 PeaceGiver.LOGGER.error("Error reloading PeaceGiver config", e);
