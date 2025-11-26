@@ -3,9 +3,9 @@ package me.kall.peacegiver.config;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import me.kall.jsonate.api.JsonConfig;
+import me.kall.duplicationless.config.JsonConfig;
 import me.kall.peacegiver.PeaceGiver;
-import me.kall.peacegiver.api.Giver;
+import me.kall.peacegiver.ext.Giver;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -20,7 +20,7 @@ public class GiverConfig {
     public static void loadConfig() {
         JsonConfig CONFIG = JsonConfig.create(PeaceGiver.MOD_ID, "3")
                 .put("PeaceGivers", Lists.newArrayList("minecraft:beacon=3"))
-                .put("DebugLogger", false)
+                .put("DebugLogger", true)
                 .initialize();
         DEBUG = CONFIG.getBoolean("DebugLogger");
         BLOCKS.clear();

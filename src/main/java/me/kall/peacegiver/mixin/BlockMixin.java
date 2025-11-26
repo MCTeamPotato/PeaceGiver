@@ -1,6 +1,6 @@
 package me.kall.peacegiver.mixin;
 
-import me.kall.peacegiver.api.Giver;
+import me.kall.peacegiver.ext.Giver;
 import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

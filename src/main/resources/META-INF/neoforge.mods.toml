@@ -13,5 +13,12 @@ A Minecraft mod
 '''
 #logoFile = ""
 
+[[dependencies.peacegiver]]
+modId="duplicationless"
+mandatory=true
+versionRange="[1.0.1,)"
+ordering="NONE"
+side="BOTH"
+
 [[mixins]]
 config = "peacegiver.mixins.json"

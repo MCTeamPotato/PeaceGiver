@@ -1,4 +1,4 @@
-package me.kall.peacegiver.api;
+package me.kall.peacegiver.ext;
 
 public interface Giver {
     boolean peace$isGiver();

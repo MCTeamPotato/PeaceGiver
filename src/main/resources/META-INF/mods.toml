@@ -11,3 +11,10 @@ authors = "Kall"
 description = '''
 '''
 #logoFile = ""
+
+[[dependencies.peacegiver]]
+modId="duplicationless"
+mandatory=true
+versionRange="[1.0.1,)"
+ordering="NONE"
+side="BOTH"
