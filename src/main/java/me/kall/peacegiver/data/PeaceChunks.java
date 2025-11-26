@@ -18,7 +18,7 @@ public class PeaceChunks extends ChunkData.BlockData {
     private final Object2ObjectMap<ResourceLocation, Long2ObjectMap<Set<Long>>> chunksAndReasons = new Object2ObjectOpenHashMap<>();
 
     public PeaceChunks() {
-        super(PeaceGiver.MOD_ID + "_peace_chunks");
+        super("PeaceGiverChunkStorage");
     }
 
     @Override
