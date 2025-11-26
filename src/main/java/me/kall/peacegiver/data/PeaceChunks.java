@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import me.kall.duplicationless.data.ChunkData;
-import me.kall.peacegiver.PeaceGiver;
 import me.kall.peacegiver.ext.Giver;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -34,6 +33,6 @@ public class PeaceChunks extends ChunkData.BlockData {
     }
 
     public static @NotNull ChunkData<Long, BlockState> get(ServerLevel level) {
-        return get(level, PeaceChunks::new, PeaceGiver.MOD_ID + "_peace_chunks");
+        return get(level, PeaceChunks::new, "PeaceGiverChunkStorage");
     }
 }
