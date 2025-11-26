@@ -17,11 +17,11 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,11 +57,10 @@ public final class PeaceGiver {
         if (((Giver)event.newState().getBlock()).peace$isGiver()) level.getServer().execute(() -> iterate(chunk, newRadius, chunkPos -> PeaceChunks.get(level).add(level, chunkPos, block)));
     }
 
-    private void dataRebuild(@NotNull ServerStartedEvent event) {
+    private void dataRebuild(@NotNull FMLServerStartedEvent event) {
         rebuildForServer(event.getServer());
     }
 
-    @SuppressWarnings("PatternVariableCanBeUsed")
     private void enemySpawn(LivingSpawnEvent.@NotNull CheckSpawn event) {
         if (event.getResult().equals(Event.Result.DENY)) return;
         if (!(event.getEntity() instanceof Enemy) || !(event.getWorld() instanceof ServerLevel)) return;
