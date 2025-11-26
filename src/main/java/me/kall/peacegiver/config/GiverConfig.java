@@ -20,7 +20,7 @@ public class GiverConfig {
     public static void loadConfig() {
         JsonConfig CONFIG = JsonConfig.create(PeaceGiver.MOD_ID, "3")
                 .put("PeaceGivers", Lists.newArrayList("minecraft:beacon=3"))
-                .put("DebugLogger", true)
+                .put("DebugLogger", false)
                 .initialize();
         DEBUG = CONFIG.getBoolean("DebugLogger");
         BLOCKS.clear();
