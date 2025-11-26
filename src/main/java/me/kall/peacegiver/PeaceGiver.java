@@ -8,9 +8,10 @@ import me.kall.peacegiver.ext.Giver;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.SectionPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,8 +34,8 @@ public final class PeaceGiver {
     public static final String MOD_ID = "peacegiver";
     public static final Logger LOGGER = LogManager.getLogger(PeaceGiver.class);
 
-    public PeaceGiver(@NotNull FMLJavaModLoadingContext context) {
-        IEventBus modBus = context.getModEventBus();
+    public PeaceGiver() {
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
 
         modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(GiverConfig::init));
@@ -63,10 +64,10 @@ public final class PeaceGiver {
     @SuppressWarnings("PatternVariableCanBeUsed")
     private void enemySpawn(LivingSpawnEvent.@NotNull CheckSpawn event) {
         if (event.getResult().equals(Event.Result.DENY)) return;
-        if (!(event.getEntity() instanceof Enemy) || !(event.getLevel() instanceof ServerLevel)) return;
+        if (!(event.getEntity() instanceof Enemy) || !(event.getWorld() instanceof ServerLevel)) return;
 
-        ServerLevel level = (ServerLevel)event.getLevel();
-        long chunk = ChunkPos.asLong(SectionPos.blockToSectionCoord(event.getX()), SectionPos.blockToSectionCoord(event.getZ()));
+        ServerLevel level = (ServerLevel)event.getWorld();
+        long chunk = ChunkPos.asLong(SectionPos.blockToSectionCoord(Mth.floor(event.getX())), SectionPos.blockToSectionCoord(Mth.floor(event.getZ())));
         if (PeaceChunks.get(level).viewChunk(level, chunk).isEmpty()) return;
         event.setResult(Event.Result.DENY);
         if (GiverConfig.DEBUG) LOGGER.info("[PeaceGiver] Prevent enemy {} spawning as the chunk [{}, {}] is in peace", event.getEntity(), ChunkPos.getX(chunk), ChunkPos.getZ(chunk));
@@ -76,17 +77,17 @@ public final class PeaceGiver {
         event.getDispatcher().register(Commands.literal("giverebuild").requires(source -> source.hasPermission(2)).executes(context -> {
             CommandSourceStack source = context.getSource();
 
-            source.sendFailure(Component.translatable("command.giverebuild.info.start"));
+            source.sendFailure(new TranslatableComponent("command.giverebuild.info.start"));
 
             try {
                 GiverConfig.loadConfig();
                 GiverConfig.init();
                 rebuildForServer(source.getServer());
-                source.sendSuccess(Component.translatable("command.giverebuild.info.complete"), true);
+                source.sendSuccess(new TranslatableComponent("command.giverebuild.info.complete"), true);
                 return Command.SINGLE_SUCCESS;
             } catch (Exception e) {
                 PeaceGiver.LOGGER.error("Error reloading PeaceGiver config", e);
-                source.sendFailure(Component.translatable("command.giverebuild.info.error"));
+                source.sendFailure(new TranslatableComponent("command.giverebuild.info.error"));
                 return 0;
             }
         }));
