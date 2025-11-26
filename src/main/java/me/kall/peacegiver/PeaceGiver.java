@@ -13,14 +13,15 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.living.MobSpawnEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -32,9 +33,8 @@ public final class PeaceGiver {
     public static final String MOD_ID = "peacegiver";
     public static final Logger LOGGER = LogManager.getLogger(PeaceGiver.class);
 
-    public PeaceGiver(@NotNull FMLJavaModLoadingContext context) {
-        IEventBus modBus = context.getModEventBus();
-        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+    public PeaceGiver(IEventBus modBus, Dist dist, ModContainer container) {
+        IEventBus forgeBus = NeoForge.EVENT_BUS;
 
         modBus.addListener((FMLCommonSetupEvent event) -> event.enqueueWork(GiverConfig::init));
         forgeBus.addListener(this::blockChange);
@@ -59,7 +59,7 @@ public final class PeaceGiver {
         rebuildForServer(event.getServer());
     }
 
-    private void enemySpawn(MobSpawnEvent.@NotNull FinalizeSpawn event) {
+    private void enemySpawn(FinalizeSpawnEvent event) {
         if (event.isSpawnCancelled()) return;
         if (!(event.getEntity() instanceof Enemy)) return;
 

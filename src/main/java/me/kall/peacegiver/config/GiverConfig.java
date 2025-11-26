@@ -6,8 +6,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.kall.duplicationless.config.JsonConfig;
 import me.kall.peacegiver.PeaceGiver;
 import me.kall.peacegiver.ext.Giver;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class GiverConfig {
     public static final Object2IntMap<String> BLOCKS = new Object2IntOpenHashMap<>();
@@ -38,7 +38,7 @@ public class GiverConfig {
     }
 
     public static void init() {
-        ForgeRegistries.BLOCKS.getEntries().forEach(entry -> {
+        BuiltInRegistries.BLOCK.entrySet().forEach(entry -> {
             int radius = BLOCKS.getOrDefault(entry.getKey().location().toString(), -1);
             Block block = entry.getValue();
             ((Giver) block).peace$setAsGiver(radius != -1);
